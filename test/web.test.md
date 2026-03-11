@@ -1,8 +1,6 @@
-# Copilot Skill Web Tests
+# copilot skills web
 
-Tests for the `aux4 copilot skills web` commands.
-
-## Test 1: Prompt command
+## prompt
 
 ### should output web skill instructions
 
@@ -34,7 +32,7 @@ aux4 copilot skills web prompt
 ## CRITICAL RULES
 ```
 
-## Test 2: Search command help
+## search command help
 
 ### should show search query parameter
 
@@ -46,7 +44,7 @@ aux4 copilot skills web search --help
 The search query
 ```
 
-## Test 3: Fetch command help
+## fetch command help
 
 ### should show fetch url parameter
 
@@ -58,7 +56,7 @@ aux4 copilot skills web fetch --help
 The URL to fetch
 ```
 
-## Test 4: Web skill registration
+## skill registration
 
 ### should appear in copilot skills
 
