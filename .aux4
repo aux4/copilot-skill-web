@@ -1,0 +1,73 @@
+{
+  "scope": "agent",
+  "name": "copilot-skill-web",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Copilot skill for searching the web and fetching content from URLs",
+  "dependencies": [
+    "aux4/copilot",
+    "aux4/browser"
+  ],
+  "profiles": [
+    {
+      "name": "copilot:skills",
+      "commands": [
+        {
+          "name": "web",
+          "execute": [
+            "profile:copilot:skills:web"
+          ],
+          "help": {
+            "text": "Search the web and fetch content from URLs using a headless browser"
+          }
+        }
+      ]
+    },
+    {
+      "name": "copilot:skills:web",
+      "commands": [
+        {
+          "name": "prompt",
+          "execute": [
+            "cat ${packageDir}/instructions/web.md"
+          ],
+          "help": {
+            "text": "Get the prompt/instructions for this skill"
+          }
+        },
+        {
+          "name": "search",
+          "execute": [
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"https://search.yahoo.com/search?p=$(echo '${query}' | sed 's/ /+/g')\" 2>/dev/null); aux4 browser content --session $SESSION --format markdown; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+          ],
+          "help": {
+            "text": "Search the web for information on a topic",
+            "variables": [
+              {
+                "name": "query",
+                "text": "The search query",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "fetch",
+          "execute": [
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\" 2>/dev/null); aux4 browser content --session $SESSION --format markdown; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+          ],
+          "help": {
+            "text": "Fetch and extract content from a URL",
+            "variables": [
+              {
+                "name": "url",
+                "text": "The URL to fetch",
+                "arg": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
