@@ -124,7 +124,7 @@
         {
           "name": "download",
           "execute": [
-            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\"); aux4 browser download --session $SESSION --url \"${url}\" --output \"${output}\"; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open); aux4 browser download --session $SESSION --url \"${url}\" --output \"${output}\"; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
           ],
           "help": {
             "text": "Download a file from a URL",
