@@ -38,7 +38,8 @@
         {
           "name": "search",
           "execute": [
-            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"https://search.yahoo.com/search?p=$(echo '${query}' | sed 's/ /+/g')\" 2>/dev/null); aux4 browser content --session $SESSION --format markdown; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+            "set:script=!cat ${packageDir}/lib/extract-search-results.js",
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"https://search.yahoo.com/search?p=$(echo '${query}' | sed 's/ /+/g')\"); aux4 browser eval --session $SESSION --script value(script); aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
           ],
           "help": {
             "text": "Search the web for information on a topic",
@@ -54,14 +55,135 @@
         {
           "name": "fetch",
           "execute": [
-            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\" 2>/dev/null); aux4 browser content --session $SESSION --format markdown; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+            "set:script=!cat ${packageDir}/lib/extract-content.js",
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\"); sleep 3; aux4 browser eval --session $SESSION --script value(script); aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
           ],
           "help": {
-            "text": "Fetch and extract content from a URL",
+            "text": "Fetch and extract the main content from a URL",
             "variables": [
               {
                 "name": "url",
                 "text": "The URL to fetch",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "fields",
+          "execute": [
+            "set:script=!cat ${packageDir}/lib/extract-fields.js",
+            "aux4 browser eval --session ${session} --script value(script)"
+          ],
+          "help": {
+            "text": "Extract form fields from the current browser session",
+            "variables": [
+              {
+                "name": "session",
+                "text": "The browser session ID",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "interact",
+          "execute": [
+            "aux4 browser execute --session ${session} --instructions ${instructions}"
+          ],
+          "help": {
+            "text": "Execute playbook instructions on the current browser session",
+            "variables": [
+              {
+                "name": "session",
+                "text": "The browser session ID"
+              },
+              {
+                "name": "instructions",
+                "text": "Path to the playbook instructions file"
+              }
+            ]
+          }
+        },
+        {
+          "name": "open",
+          "execute": [
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; aux4 browser open --url \"${url}\""
+          ],
+          "help": {
+            "text": "Open a URL in the browser and return the session ID",
+            "variables": [
+              {
+                "name": "url",
+                "text": "The URL to open",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "download",
+          "execute": [
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\"); aux4 browser download --session $SESSION --url \"${url}\" --output \"${output}\"; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+          ],
+          "help": {
+            "text": "Download a file from a URL",
+            "variables": [
+              {
+                "name": "url",
+                "text": "The URL to download",
+                "arg": true
+              },
+              {
+                "name": "output",
+                "text": "Output file path",
+                "default": "download"
+              }
+            ]
+          }
+        },
+        {
+          "name": "save-pdf",
+          "execute": [
+            "aux4 browser save-pdf --session ${session} --output \"${output}\" --format \"${format}\" --printBackground \"${printBackground}\""
+          ],
+          "help": {
+            "text": "Save the current page as a PDF (requires an open session)",
+            "variables": [
+              {
+                "name": "session",
+                "text": "The browser session ID",
+                "arg": true
+              },
+              {
+                "name": "output",
+                "text": "Output file path",
+                "default": "page.pdf"
+              },
+              {
+                "name": "format",
+                "text": "Paper format: Letter, A4, Legal, Tabloid",
+                "default": ""
+              },
+              {
+                "name": "printBackground",
+                "text": "Include background graphics",
+                "default": "false"
+              }
+            ]
+          }
+        },
+        {
+          "name": "close",
+          "execute": [
+            "aux4 browser close --session ${session} >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1"
+          ],
+          "help": {
+            "text": "Close a browser session and stop the browser",
+            "variables": [
+              {
+                "name": "session",
+                "text": "The browser session ID",
                 "arg": true
               }
             ]
