@@ -51,6 +51,49 @@ aux4 copilot skills web prompt
 - `aux4 copilot skills web prompt` - Get the skill instructions
 - `aux4 copilot skills web search` - Search the web for information on a topic
 - `aux4 copilot skills web fetch` - Fetch and extract content from a URL
+- `aux4 copilot skills web recipe list` - List available recipes
+- `aux4 copilot skills web recipe create` - Create a new recipe by performing a task and saving the steps
+- `aux4 copilot skills web recipe run` - Run a saved recipe with input values
+
+## Recipes
+
+Recipes are reusable web task automations. The AI performs a task once (e.g., "check npm package latest version on npmjs.com"), discovers the page structure, and saves a recipe — a browser playbook script with parameterized variables. Subsequent runs execute the recipe with different inputs, no AI cost.
+
+### Create a Recipe
+
+```bash
+aux4 copilot skills web recipe create "check latest version of a package on npmjs.com" --name npm-version
+```
+
+The AI agent opens the browser, discovers the page structure, and saves a `.recipe` file.
+
+### Run a Recipe
+
+```bash
+aux4 copilot skills web recipe run "npm-version" --input express
+```
+
+Substitutes the input into the recipe URL and playbook instructions, opens the browser, runs the playbook, and returns the result.
+
+### List Recipes
+
+```bash
+aux4 copilot skills web recipe list
+```
+
+### Recipe File Format
+
+A `.recipe` file combines a URL template with browser playbook instructions:
+
+```
+url: https://www.npmjs.com/package/{packageName}
+
+get text of .package-json-redux p
+```
+
+- **Line 1:** `url:` followed by the URL pattern with `{variableName}` placeholders
+- **Line 2:** Empty line (separator)
+- **Lines 3+:** Browser playbook instructions (same format as `.playbook` files)
 
 ## How It Works
 
@@ -65,6 +108,7 @@ This pattern is cheaper than AI-driven skills since there are no inner LLM round
 
 - `aux4/copilot` - Copilot framework
 - `aux4/browser` - Headless browser automation
+- `aux4/ai-agent` - AI agent framework (used by recipe create)
 
 ## License
 

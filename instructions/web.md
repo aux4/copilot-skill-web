@@ -99,6 +99,40 @@ When asked to save a page as a PDF:
    copilot skills web close "<session>"
    ```
 
+## Task: Recipe
+
+Recipes are reusable web task automations. The AI performs a task once, discovers the page structure, and saves a recipe — a browser playbook script with parameterized variables. Subsequent runs execute the recipe with different inputs, no AI cost.
+
+### Create a Recipe
+
+When asked to create a recipe for a repeatable web task:
+
+1. Call `executeAux4`:
+   ```
+   copilot skills web recipe create "<task description>" --name "<recipe-name>" --recipeDir "<dir>"
+   ```
+   The AI agent will open the browser, discover page structure, write the `.recipe` file, and close the session.
+
+### Run a Recipe
+
+When asked to run an existing recipe:
+
+1. Call `executeAux4`:
+   ```
+   copilot skills web recipe run "<recipe-name>" --input "<value>"
+   ```
+   This substitutes the input into the recipe URL and playbook instructions, opens the browser, runs the playbook, and returns the result.
+
+### List Recipes
+
+When asked to list available recipes:
+
+1. Call `executeAux4`:
+   ```
+   copilot skills web recipe list
+   ```
+   Returns the names of all saved `.recipe` files.
+
 ## CRITICAL RULES
 
 **ALWAYS:**

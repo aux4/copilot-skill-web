@@ -1,12 +1,13 @@
 {
   "scope": "agent",
   "name": "copilot-skill-web",
-  "version": "0.1.0",
+  "version": "0.1.0-local",
   "license": "Apache-2.0",
   "description": "Copilot skill for searching the web and fetching content from URLs",
   "dependencies": [
     "aux4/copilot",
-    "aux4/browser"
+    "aux4/browser",
+    "aux4/ai-agent"
   ],
   "profiles": [
     {
@@ -185,6 +186,94 @@
                 "name": "session",
                 "text": "The browser session ID",
                 "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipe",
+          "execute": [
+            "profile:copilot:skills:web:recipe"
+          ],
+          "help": {
+            "text": "Manage reusable web task recipes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "copilot:skills:web:recipe",
+      "commands": [
+        {
+          "name": "list",
+          "execute": [
+            "ls ${recipeDir}/*.recipe 2>/dev/null | while read f; do basename \"$f\" .recipe; done || echo \"No recipes found\""
+          ],
+          "help": {
+            "text": "List available recipes",
+            "variables": [
+              {
+                "name": "recipeDir",
+                "text": "Directory where recipes are stored",
+                "default": ".recipes"
+              }
+            ]
+          }
+        },
+        {
+          "name": "create",
+          "execute": [
+            "aux4 ai agent ask --instructions ${packageDir}/instructions/recipe.md --question 'Create a recipe named \"${name}\" for: ${task}. ${message}'"
+          ],
+          "help": {
+            "text": "Create a new recipe by performing a task and saving the steps",
+            "variables": [
+              {
+                "name": "name",
+                "text": "Name for the recipe"
+              },
+              {
+                "name": "task",
+                "text": "Description of the task to automate",
+                "arg": true
+              },
+              {
+                "name": "message",
+                "text": "Additional context or instructions",
+                "default": ""
+              },
+              {
+                "name": "recipeDir",
+                "text": "Directory where recipes are stored",
+                "default": ".recipes"
+              }
+            ]
+          }
+        },
+        {
+          "name": "run",
+          "execute": [
+            "set:url=!head -1 ${recipeDir}/${name}.recipe | sed 's/^url: //' | sed \"s/{[^}]*}/${input}/g\"",
+            "set:tmpPlaybook=!mktemp /tmp/recipe-XXXXX.playbook",
+            "tail -n +3 ${recipeDir}/${name}.recipe | sed \"s/{[^}]*}/${input}/g\" > ${tmpPlaybook}",
+            "aux4 browser start --persistent true >/dev/null 2>&1 & sleep 3; SESSION=$(aux4 browser open --url \"${url}\"); sleep 2; aux4 browser execute --session $SESSION --instructions ${tmpPlaybook}; aux4 browser close --session $SESSION >/dev/null 2>&1; aux4 browser stop >/dev/null 2>&1; rm -f ${tmpPlaybook}"
+          ],
+          "help": {
+            "text": "Run a saved recipe with input values",
+            "variables": [
+              {
+                "name": "name",
+                "text": "Name of the recipe to run",
+                "arg": true
+              },
+              {
+                "name": "input",
+                "text": "Input value to substitute into recipe variables"
+              },
+              {
+                "name": "recipeDir",
+                "text": "Directory where recipes are stored",
+                "default": ".recipes"
               }
             ]
           }
