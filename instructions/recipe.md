@@ -84,7 +84,7 @@ Available playbook instructions:
 - `get text of <selector>` — extract text content from an element
 - `get attribute "<attr>" of <selector>` — extract an attribute value
 - `click "<text>"` — click a button or link by visible text
-- `type "<value>" in "<field>"` — type into an input field
+- `type "<value>" in "<field>"` — type into an input field. For credentials, use `secret://` references: `type "secret://1password/<vault>/<item>/<field>" in "<field>"` — the value is resolved at runtime and never exposed to the AI
 - `select "<option>" in "<field>"` — select a dropdown option
 - `check "<checkbox>"` — check a checkbox
 - `wait for <selector>` — wait for an element to appear
