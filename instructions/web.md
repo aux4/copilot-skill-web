@@ -69,6 +69,13 @@ When the user needs to interact with a web form (login, submit data, fill fields
    type "secret://1password/Work/Jira/username" in "Username"
    type "secret://1password/Work/Jira/password" in "Password"
    ```
+
+   **TOTP / MFA codes:** For sites that require a one-time password after login, use the special `otp` field:
+   ```
+   type "secret://1password/<vault>/<item>/otp" in "One time code"
+   ```
+   This generates the current 6-digit TOTP code at runtime. The code is never exposed to the AI.
+
    The browser resolves `secret://` references automatically — the actual credential is never exposed to the AI. Ask the user which vault and item to use if not specified.
 
 4. Execute the playbook:

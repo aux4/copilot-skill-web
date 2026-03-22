@@ -1,7 +1,7 @@
 {
   "scope": "agent",
   "name": "copilot-skill-web",
-  "version": "0.1.0-local",
+  "version": "0.1.1-local",
   "license": "Apache-2.0",
   "description": "Copilot skill for searching the web and fetching content from URLs",
   "dependencies": [
@@ -34,6 +34,15 @@
           ],
           "help": {
             "text": "Get the prompt/instructions for this skill"
+          }
+        },
+        {
+          "name": "model",
+          "execute": [
+            "echo fast"
+          ],
+          "help": {
+            "text": "Get the preferred model intent for this skill"
           }
         },
         {
